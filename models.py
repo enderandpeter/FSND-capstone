@@ -2,6 +2,7 @@ import os
 from sqlalchemy import Column, String, Integer, DateTime, Enum, text
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from datetime import datetime
 
 database_path = os.environ['DATABASE_URL']
@@ -16,6 +17,7 @@ def setup_db(app, database_path=database_path):
     :param database_path:
     :return:
     """
+    migrate = Migrate(app, db)
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
