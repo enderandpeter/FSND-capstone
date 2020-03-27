@@ -33,6 +33,12 @@ class Movies(db.Model):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     release_date = Column(DateTime)
+    actors = db.relationship(
+        'Actors',
+        secondary=actors_movies,
+        lazy='subquery',
+        backref=db.backref('movies', lazy=True)
+    )
 
     def format(self):
         return {
