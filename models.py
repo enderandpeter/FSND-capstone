@@ -1,8 +1,8 @@
 import os
-from sqlalchemy import Column, String, Integer, DateTime, Enum
+from sqlalchemy import Column, String, Integer, DateTime, Enum, text
+from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
-import json
-import enum
+from datetime import datetime
 
 database_path = os.environ['DATABASE_URL']
 
@@ -31,8 +31,8 @@ actors_movies = db.Table(
 
 class Movies(db.Model):
     id = Column(Integer, primary_key=True)
-    title = Column(String)
-    release_date = Column(DateTime)
+    title = Column(String, nullable=False)
+    release_date = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     actors = db.relationship(
         'Actors',
         secondary=actors_movies,
@@ -50,8 +50,8 @@ class Movies(db.Model):
 
 class Actors(db.Model):
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    gender = Column(Enum('m', 'f', name='gender'))
+    name = Column(String, nullable=False)
+    gender = Column(Enum('m', 'f', name='gender'), nullable=False, server_default='m')
 
     def format(self):
         return {
