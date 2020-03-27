@@ -1,41 +1,55 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine
+from sqlalchemy import Column, String, Integer, DateTime, Enum
 from flask_sqlalchemy import SQLAlchemy
 import json
+import enum
 
 database_path = os.environ['DATABASE_URL']
 
 db = SQLAlchemy()
 
-'''
-setup_db(app)
-    binds a flask application and a SQLAlchemy service
-'''
+
 def setup_db(app, database_path=database_path):
+    """
+    binds a flask application and a SQLAlchemy service
+    :param app:
+    :param database_path:
+    :return:
+    """
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
 
 
-'''
-Person
-Have title and release year
-'''
-class Person(db.Model):
-  __tablename__ = 'People'
+actors_movies = db.Table(
+    'actors_movies',
+    db.Column('actor_id', db.Integer, db.ForeignKey('actors.id'), primary_key=True),
+    db.Column('movie_id', db.Integer, db.ForeignKey('movies.id'), primary_key=True)
+)
 
-  id = Column(Integer, primary_key=True)
-  name = Column(String)
-  catchphrase = Column(String)
 
-  def __init__(self, name, catchphrase=""):
-    self.name = name
-    self.catchphrase = catchphrase
+class Movies(db.Model):
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+    release_date = Column(DateTime)
 
-  def format(self):
-    return {
-      'id': self.id,
-      'name': self.name,
-      'catchphrase': self.catchphrase
-    }
+    def format(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'release_date': self.release_date.strftime('%c')
+        }
+
+
+class Actors(db.Model):
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    gender = Column(Enum('m', 'f', name='gender'))
+
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'gender': 'Male' if self.gender is 'm' else 'Female'
+        }
