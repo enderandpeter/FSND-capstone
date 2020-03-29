@@ -16,6 +16,7 @@ Tested on:
 2. Set the environment variables:
    * `DATABASE_URL` - The database URL for the app
    * `AUTH0_DOMAIN`, `ALGORITHMS`, `API_AUDIENCE` - Auth0 settings
+3. Run `flask db upgrade` to create all the tables
    
 ## Deployment
 
