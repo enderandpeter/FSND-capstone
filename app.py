@@ -1,7 +1,7 @@
 import os
 import sys
 from flask import Flask, request, abort, jsonify
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, HTTPException
 from flask_cors import CORS
 from auth import requires_auth
 
@@ -28,15 +28,8 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Methods', 'GET, POST, DELETE, PATCH')
         return response
 
-    @app.route('/')
-    def get_greeting():
-        excited = os.environ['EXCITED'] if 'EXCITED' in os.environ else False
-        greeting = "Hello"
-        if excited == 'true': greeting = greeting + "!!!!!"
-        return greeting
-
-    @requires_auth('get:actors')
     @app.route('/actors')
+    @requires_auth('get:actors')
     def get_actors():
         try:
             actors = Actors.query.order_by('id').all()
@@ -49,7 +42,23 @@ def create_app(test_config=None):
 
         return jsonify(response)
 
+    # Error Handling
+    @app.errorhandler(HTTPException)
+    def handle_bad_request(e):
+        code = e.code if hasattr(e, 'code') else 500
+        description = e.description if hasattr(e, 'description') else 'Please contact the server admin'
+        response_body = {
+            "code": code,
+            "description": description,
+        }
+
+        if hasattr(e, 'message'):
+            response_body['message'] = e.message
+
+        return jsonify(response_body), code
+
     return app
+
 
 APP = create_app()
 

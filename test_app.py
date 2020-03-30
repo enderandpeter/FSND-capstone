@@ -33,9 +33,9 @@ class CastingTestCase(unittest.TestCase):
         response = self.client().get('/')
         self.assertEqual(b'Hello', response.data)
 
-    def test_get_actors(self):
+    def test_ca_get_actors(self):
         """
-        Each user role should have access controlled by their permissions
+        A Casting Assistant can retrieve actor data
         :return:
         """
 
@@ -55,8 +55,15 @@ class CastingTestCase(unittest.TestCase):
         actors_response = self.client().get('/actors', headers={
             'Authorization': f'Bearer {token}'
         })
-        self.assertDictEqual(actors_response.json, {'actors': []})
+        self.assertEqual(actors_response.json, {'actors': []})
 
+    def test_public_get_actors(self):
+        """
+        The public cannot get actors
+        :return:
+        """
 
+        actors_response = self.client().get('/actors')
+        self.assertEqual(actors_response.json['code'], 401)
 if __name__ == '__main__':
     unittest.main()

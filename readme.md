@@ -40,3 +40,20 @@ See the bottom of `app.py` for the run settings. The server will run on port 808
    The credentials for a Machine-to-Machine test application are recommended.
    * `TEST_CA_USER`, `TEST_CA_PASS` - Credentials for the test Casting Assistant user
 2. Run `python test_app.py`
+
+## Users
+
+User authentication, and authorization are managed by Auth0.
+
+Currently, if you registered a new account, you'd still not access anything without a role with permissions.
+These are manually attributed for the time being, so the Postman collection will contain JWTs that can be used
+in the frontend. Also, there are test credentials available for each role, which are used in the tests to obtain
+access tokens from the Machine-to-Machine test application.
+
+### Permissions
+
+These permissions are in the `permissions` property of the JWT payload, as you might expect. 
+
+#### Casting Assistants
+
+* *get:actors* 
