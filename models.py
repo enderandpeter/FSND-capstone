@@ -26,8 +26,8 @@ def setup_db(app, database_path=database_path):
 
 actors_movies = db.Table(
     'actors_movies',
-    db.Column('actor_id', db.Integer, db.ForeignKey('actors.id'), primary_key=True),
-    db.Column('movie_id', db.Integer, db.ForeignKey('movies.id'), primary_key=True)
+    db.Column('actor_id', db.Integer, db.ForeignKey('actors.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True),
+    db.Column('movie_id', db.Integer, db.ForeignKey('movies.id', onupdate='CASCADE', ondelete='CASCADE'), primary_key=True)
 )
 
 
@@ -46,7 +46,8 @@ class Movies(db.Model):
         return {
             'id': self.id,
             'title': self.title,
-            'release_date': self.release_date.strftime('%c')
+            'release_date': self.release_date.strftime('%c'),
+            'actors': [actor.format() for actor in self.actors]
         }
 
 
@@ -59,5 +60,6 @@ class Actors(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'gender': 'Male' if self.gender is 'm' else 'Female'
+            'gender': 'Male' if self.gender is 'm' else 'Female',
+            'movies': [movie.format() for movie in self.movies]
         }

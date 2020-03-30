@@ -1,15 +1,32 @@
 import os
+import sys
 from flask import Flask, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from werkzeug.exceptions import BadRequest
 from flask_cors import CORS
+from auth import requires_auth
 
-from models import setup_db
+from models import setup_db, Actors, Movies
 
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    setup_db(app)
-    CORS(app)
+    if type(test_config) == dict:
+        setup_db(app, **test_config)
+    else:
+        setup_db(app)
+
+    CORS(
+        app,
+        origins='*',
+        methods=['GET', 'POST', 'DELETE', 'PATCH'],
+        allow_headers=['Authorization', 'Content-Type']
+    )
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Authorization, Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, DELETE, PATCH')
+        return response
 
     @app.route('/')
     def get_greeting():
@@ -18,9 +35,19 @@ def create_app(test_config=None):
         if excited == 'true': greeting = greeting + "!!!!!"
         return greeting
 
-    @app.route('/coolkids')
-    def be_cool():
-        return "Be cool, man, be coooool! You're almost a FSND grad!"
+    @requires_auth('get:actors')
+    @app.route('/actors')
+    def get_actors():
+        try:
+            actors = Actors.query.order_by('id').all()
+            response = {
+                'actors': [actor.short() for actor in actors]
+            }
+        except Exception:
+            print(sys.exc_info())
+            raise BadRequest
+
+        return jsonify(response)
 
     return app
 

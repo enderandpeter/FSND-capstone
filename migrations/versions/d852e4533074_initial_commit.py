@@ -1,18 +1,16 @@
 """Initial commit
 
-Revision ID: c533df43b3b6
+Revision ID: d852e4533074
 Revises: 
-Create Date: 2020-03-27 01:00:46.163301
+Create Date: 2020-03-29 13:19:30.888015
 
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.sql import func
-from datetime import datetime
 
 
 # revision identifiers, used by Alembic.
-revision = 'c533df43b3b6'
+revision = 'd852e4533074'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,20 +22,20 @@ def upgrade():
     op.create_table('actors',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('gender', gender, nullable=False, server_default='m'),
+    sa.Column('gender', gender, server_default='m', nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('movies',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
-    sa.Column('release_date', sa.DateTime(), server_default=func.now(), nullable=False),
+    sa.Column('release_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('actors_movies',
     sa.Column('actor_id', sa.Integer(), nullable=False),
     sa.Column('movie_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['actor_id'], ['actors.id'], ),
-    sa.ForeignKeyConstraint(['movie_id'], ['movies.id'], ),
+    sa.ForeignKeyConstraint(['actor_id'], ['actors.id'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['movie_id'], ['movies.id'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('actor_id', 'movie_id')
     )
     # ### end Alembic commands ###

@@ -11,7 +11,7 @@ from errors import AuthHeaderMissing, AuthHeaderInvalid, PermissionsNotFound, To
 
 auth0_settings_names = ['AUTH0_DOMAIN', 'ALGORITHMS', 'API_AUDIENCE']
 auth0_settings = {setting: os.environ[setting] for setting in auth0_settings_names}
-
+auth0_settings['ALGORITHMS'] = auth0_settings['ALGORITHMS'].split(',')
 
 # Much of the following is from BasicFlaskAuth
 
