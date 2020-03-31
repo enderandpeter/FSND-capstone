@@ -29,13 +29,9 @@ class CastingTestCase(unittest.TestCase):
         with self.app.app_context():
             downgrade()
 
-    def test_index(self):
-        response = self.client().get('/')
-        self.assertEqual(b'Hello', response.data)
-
-    def test_ca_get_actors(self):
+    def ca_get(self, data_type):
         """
-        A Casting Assistant can retrieve actor data
+        Get data as a Casting Assistant
         :return:
         """
 
@@ -52,18 +48,37 @@ class CastingTestCase(unittest.TestCase):
 
         token = token_response['access_token']
 
-        actors_response = self.client().get('/actors', headers={
+        actors_response = self.client().get(f'/{data_type}', headers={
             'Authorization': f'Bearer {token}'
         })
-        self.assertEqual(actors_response.json, {'actors': []})
+        self.assertEqual(actors_response.json, {f'{data_type}': []})
 
-    def test_public_get_actors(self):
+    def public_get(self, data_type):
         """
-        The public cannot get actors
+        Get data as a member of the public
         :return:
         """
 
-        actors_response = self.client().get('/actors')
+        actors_response = self.client().get(f'/{data_type}')
         self.assertEqual(actors_response.json['code'], 401)
+
+    def test_ca_get(self):
+        """"
+        Casting Assistants can get their permitted data
+        """
+        data = ['actors', 'movies']
+
+        for data_type in data:
+            self.ca_get(data_type)
+
+    def test_public_get(self):
+        """"
+        The public cannot get authenticated data
+        """
+        data = ['actors', 'movies']
+        for data_type in data:
+            self.public_get(data_type)
+
+
 if __name__ == '__main__':
     unittest.main()

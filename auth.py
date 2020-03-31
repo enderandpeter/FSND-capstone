@@ -43,7 +43,7 @@ def check_permissions(permission, payload):
         raise PermissionsNotFound
 
     if permission not in payload['permissions']:
-        raise Unauthorized(description='Permission not found.')
+        raise Unauthorized(description=f'Permission {permission} not found.')
     return True
 
 
