@@ -11,9 +11,10 @@ from models import setup_db, Actors, Movies, MAX_ACTOR_NAME_LENGTH, MIN_ACTOR_NA
 def create_app(test_config=None):
     app = Flask(__name__)
     if type(test_config) == dict:
-        setup_db(app, **test_config)
+        app.db = setup_db(app, **test_config)
     else:
-        setup_db(app)
+        app.db = setup_db(app)
+
 
     CORS(
         app,
@@ -77,7 +78,7 @@ def create_app(test_config=None):
         if check_gender:
             actor_data['gender'] = gender.lower().strip()
 
-            if actor_data['gender'] is not 'm' or actor_data['gender'] is not 'f':
+            if actor_data['gender'] != 'm' and actor_data['gender'] != 'f':
                 raise UnprocessableEntity(
                     description=f'Actor gender must be "m" or "f"'
                 )
@@ -113,7 +114,7 @@ def create_app(test_config=None):
             actor.insert()
             response = {
                 'success': True,
-                'actor': [actor.format()]
+                'actors': [actor.format()]
             }
         except UnprocessableEntity:
             raise

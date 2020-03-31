@@ -13,6 +13,7 @@ MAX_ACTOR_AGE = 150
 MIN_ACTOR_NAME_LENGTH = 3
 MAX_ACTOR_NAME_LENGTH = 100
 
+
 def setup_db(app, database_path=database_path):
     """
     binds a flask application and a SQLAlchemy service
@@ -25,6 +26,8 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
+
+    return db
 
 
 def update():
@@ -108,5 +111,6 @@ class Actors(Model, db.Model):
             'id': self.id,
             'name': self.name,
             'gender': 'Male' if self.gender is 'm' else 'Female',
+            'age': self.age,
             'movies': [movie.format() for movie in self.movies]
         }
