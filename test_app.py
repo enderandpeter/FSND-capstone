@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from urllib.parse import urlencode
 from datetime import datetime
 
-from models import Actors
+from models import Actors, Movies
 
 
 class CastingTestCase(unittest.TestCase):
@@ -151,9 +151,9 @@ class CastingTestCase(unittest.TestCase):
 
     def test_ca_patch(self):
         """"
-        Casting Assistants cannot edit actors
+        Casting Assistants cannot edit actors nor movies
         """
-        data = ['actors']
+        data = ['actors', 'movies']
         for entity_type in data:
 
             if entity_type == 'actors':
@@ -171,11 +171,25 @@ class CastingTestCase(unittest.TestCase):
 
                 self.assertEqual(actors_response.json['code'], 401)
 
+            if entity_type == 'movies':
+                movie_data = {
+                    "title": "The Big One",
+                    "release_date": datetime.fromisoformat('2020-03-22 22:23:11')
+                };
+                movie = Movies(**movie_data)
+                movie.insert()
+
+                movies_response = self.user_patch('CA', entity_type, 1, {
+                    "title": "The Little One"
+                })
+
+                self.assertEqual(movies_response.json['code'], 401)
+
     def test_ca_delete(self):
         """"
-        Casting Assistants cannot delete actors
+        Casting Assistants cannot delete actors nor movies
         """
-        data = ['actors']
+        data = ['actors', 'movies']
         for entity_type in data:
             if entity_type == 'actors':
                 actor_data = {
@@ -188,6 +202,17 @@ class CastingTestCase(unittest.TestCase):
 
                 actors_response = self.user_delete('CA', entity_type, 1)
                 self.assertEqual(actors_response.json['code'], 401)
+
+            if entity_type == 'movies':
+                movie_data = {
+                    "title": "The Big One",
+                    "release_date": datetime.fromisoformat('2020-03-22 22:23:11')
+                };
+                movie = Movies(**movie_data)
+                movie.insert()
+
+                movies_response = self.user_delete('CA', entity_type, 1)
+                self.assertEqual(movies_response.json['code'], 401)
 
     def test_cd_get(self):
         """"
@@ -218,11 +243,11 @@ class CastingTestCase(unittest.TestCase):
                 ], 'success': True})
 
             if entity_type is 'movies':
-                actors_response = self.user_post('CA', entity_type, {
+                movies_response = self.user_post('CD', entity_type, {
                     "title": "The Big One",
                     "release_date": datetime.fromisoformat('2020-03-22 22:23:11').timestamp()
                 })
-                self.assertEqual(actors_response.json['code'], 401)
+                self.assertEqual(movies_response.json['code'], 401)
 
     def test_cd_patch(self):
         """"
@@ -265,6 +290,8 @@ class CastingTestCase(unittest.TestCase):
 
                 actors_response = self.user_delete('CD', entity_type, 1)
                 self.assertEqual(actors_response.json, {'delete': 1, 'success': True})
+                with self.app.app_context():
+                    self.assertIsNone(self.app.db.session.query(Actors).get(1))
 
     def test_ep_get(self):
         """"

@@ -243,6 +243,60 @@ def create_app(test_config=None):
 
         return jsonify(response)
 
+    @app.route('/movies/<movie_id>', methods=['PATCH'])
+    @requires_auth(permission='update:movies')
+    def update_movie(movie_id):
+        try:
+            movie = Movies.query.get(movie_id)
+            if not movie:
+                raise
+
+            movie_props = ['title', 'release_date']
+            movie_data = {}
+
+            for prop in movie_props:
+                if prop in request.get_json():
+                    movie_data[prop] = request.get_json()[prop]
+
+            movie_data = validate_actor(**movie_data)
+
+            for prop, val in movie_data.items():
+                setattr(movie, prop, val)
+
+            update()
+            response = {
+                'success': True,
+                'movies': [movie.format()]
+            }
+        except UnprocessableEntity:
+            raise
+        except Exception:
+            print(sys.exc_info())
+            raise BadRequest
+
+        return jsonify(response)
+
+    @app.route('/movies/<movie_id>', methods=['DELETE'])
+    @requires_auth(permission='delete:movies')
+    def delete_movie(movie_id):
+        try:
+            movie = Movies.query.get(movie_id)
+            if not movie:
+                raise NotFound
+
+            movie.delete()
+            response = {
+                'success': True,
+                'delete': movie_id
+            }
+        except NotFound:
+            raise
+        except Exception:
+            print(sys.exc_info())
+            raise BadRequest
+
+        return jsonify(response)
+
     # Error Handling
     @app.errorhandler(HTTPException)
     def handle_bad_request(e):
