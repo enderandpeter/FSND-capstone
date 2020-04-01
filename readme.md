@@ -37,8 +37,11 @@ See the bottom of `app.py` for the run settings. The server will run on port 808
 1. Set the environment variable:
    * `DATABASE_TEST_URL` - The test database URL
    * `AUTH0_CLIENT_SECRET`, `AUTH0_CLIENT_ID` - Set these to the Auth0 client secret and ID for the Auth0 application used to get access tokens for test users.
-   The credentials for a Machine-to-Machine test application are recommended.
-   * `TEST_CA_USER`, `TEST_CA_PASS` - Credentials for the test Casting Assistant user
+   The client secret and ID for a Machine-to-Machine test application are recommended.
+   * Credentials for the test users (Casting Assistant, Casting Director, and Executive Producer):
+     * `TEST_CA_USER`, `TEST_CA_PASS`
+     * `TEST_CD_USER`, `TEST_CD_PASS`
+     * `TEST_EP_USER`, `TEST_EP_PASS`
 2. Run `python test_app.py`
 
 ## Users

@@ -12,7 +12,8 @@ MIN_ACTOR_AGE = 0
 MAX_ACTOR_AGE = 150
 MIN_ACTOR_NAME_LENGTH = 3
 MAX_ACTOR_NAME_LENGTH = 100
-
+MIN_MOVIE_TITLE_LENGTH = 1
+MAX_MOVIE_TITLE_LENGTH = 100
 
 def setup_db(app, database_path=database_path):
     """
@@ -82,7 +83,7 @@ actors_movies = db.Table(
 
 class Movies(Model, db.Model):
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
+    title = Column(String(100), nullable=False)
     release_date = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     actors = db.relationship(
         'Actors',

@@ -4,6 +4,9 @@ import unittest
 from app import create_app
 from urllib.request import urlopen
 from urllib.parse import urlencode
+from datetime import datetime
+
+from models import Actors
 
 
 class CastingTestCase(unittest.TestCase):
@@ -49,67 +52,62 @@ class CastingTestCase(unittest.TestCase):
 
         return token_response['access_token']
 
-    def ca_get(self, data_type):
+    def user_get(self, user_type, entity_type):
         """
-        Get data as a Casting Assistant
+        Get data as a certain type of user
         :return:
         """
 
-        token = CastingTestCase.get_access_token('CA')
+        token = CastingTestCase.get_access_token(user_type)
 
-        return self.client().get(f'/{data_type}', headers={
+        return self.client().get(f'/{entity_type}', headers={
             'Authorization': f'Bearer {token}'
         })
 
-    def ca_post(self, data_type):
+    def user_post(self, user_type, entity_type, request_data):
         """
-        Try to create the entity as a Casting Assistant
+        Post data as a user
         :return:
         """
 
-        token = CastingTestCase.get_access_token('CA')
-
-        return self.client()\
-            .post(f'/{data_type}',
-                 headers={
-                    'Authorization': f'Bearer {token}'
-                },
-                 json={
-                     "name": "Clarece",
-                     "gender": "f",
-                     "age": 88
-            })
-
-    def cd_get(self, data_type):
-        """
-        Get data as a Casting Assistant
-        :return:
-        """
-
-        token = CastingTestCase.get_access_token('CD')
-
-        return self.client().get(f'/{data_type}', headers={
-            'Authorization': f'Bearer {token}'
-        })
-
-    def cd_post(self, data_type):
-        """
-        Try to create the entity as a Casting Assistant
-        :return:
-        """
-
-        token = CastingTestCase.get_access_token('CD')
+        token = CastingTestCase.get_access_token(user_type)
 
         return self.client() \
-            .post(f'/{data_type}',
+            .post(f'/{entity_type}',
                   headers={
                       'Authorization': f'Bearer {token}'
                   },
-                  json={
-                      "name": "Clarece",
-                      "gender": "f",
-                      "age": 88
-                  })
+                  json=request_data)
+
+    def user_patch(self, user_type, entity_type, entity_id, request_data):
+        """
+        Update data as a user
+        :return:
+        """
+
+        token = CastingTestCase.get_access_token(user_type)
+
+        return self.client() \
+            .patch(f'/{entity_type}/{entity_id}',
+                  headers={
+                      'Authorization': f'Bearer {token}'
+                  },
+                  json=request_data)
+
+    def user_delete(self, user_type, entity_type, entity_id):
+        """
+        Delete an entity as a user
+        :return:
+        """
+
+        token = CastingTestCase.get_access_token(user_type)
+
+        return self.client() \
+            .delete(f'/{entity_type}/{entity_id}',
+                  headers={
+                      'Authorization': f'Bearer {token}'
+                  }
+            )
 
     def public_get(self, data_type):
         """
@@ -126,36 +124,196 @@ class CastingTestCase(unittest.TestCase):
         data = ['actors', 'movies']
 
         for data_type in data:
-            actors_response = self.ca_get(data_type)
+            actors_response = self.user_get('CA', data_type)
             self.assertEqual(actors_response.json, {f'{data_type}': []})
 
     def test_ca_post(self):
         """"
-        Casting Assistants cannot create actors
+        Casting Assistants cannot create actors or movies
+        """
+        data = ['actors', 'movies']
+        for entity_type in data:
+
+            if entity_type is 'actors':
+                actors_response = self.user_post('CA', entity_type, {
+                     "name": "Clarece",
+                     "gender": "f",
+                     "age": 88
+                })
+                self.assertEqual(actors_response.json['code'], 401)
+
+            if entity_type is 'movies':
+                actors_response = self.user_post('CA', entity_type, {
+                    "title": "The Big One",
+                    "release_date": datetime.fromisoformat('2020-03-22 22:23:11').timestamp()
+                })
+                self.assertEqual(actors_response.json['code'], 401)
+
+    def test_ca_patch(self):
+        """"
+        Casting Assistants cannot edit actors
         """
         data = ['actors']
-        for data_type in data:
-            actors_response = self.ca_post(data_type)
-            self.assertEqual(actors_response.json['code'], 401)
+        for entity_type in data:
+
+            if entity_type == 'actors':
+                actor_data = {
+                    "name": "Clarece",
+                    "gender": "f",
+                    "age": 88
+                };
+                actor = Actors(**actor_data)
+                actor.insert()
+
+                actors_response = self.user_patch('CA', entity_type, 1, {
+                    "name": "Amanda"
+                })
+
+                self.assertEqual(actors_response.json['code'], 401)
+
+    def test_ca_delete(self):
+        """"
+        Casting Assistants cannot delete actors
+        """
+        data = ['actors']
+        for entity_type in data:
+            if entity_type == 'actors':
+                actor_data = {
+                    "name": "Clarece",
+                    "gender": "f",
+                    "age": 88
+                };
+                actor = Actors(**actor_data)
+                actor.insert()
+
+                actors_response = self.user_delete('CA', entity_type, 1)
+                self.assertEqual(actors_response.json['code'], 401)
+
+    def test_cd_get(self):
+        """"
+        Casting Directors can get their permitted data
+        """
+        data = ['actors', 'movies']
+
+        for entity_type in data:
+            actors_response = self.user_get('CD', entity_type)
+            self.assertEqual(actors_response.json, {f'{entity_type}': []})
 
     def test_cd_post(self):
         """"
-        Casting Assistants can create actors
+        Casting Directors can create actors but not movies
+        """
+        data = ['actors', 'movies']
+        for entity_type in data:
+            actors_response = self.user_post('CD', entity_type, {
+                      "name": "Clarece",
+                      "gender": "f",
+                      "age": 88
+                  }
+            )
+
+            if entity_type == 'actors':
+                self.assertEqual(actors_response.json, {f'{entity_type}': [
+                    {'name': 'Clarece', 'gender': 'Female', 'id': 1, 'age': 88, 'movies': []}
+                ], 'success': True})
+
+            if entity_type is 'movies':
+                actors_response = self.user_post('CA', entity_type, {
+                    "title": "The Big One",
+                    "release_date": datetime.fromisoformat('2020-03-22 22:23:11').timestamp()
+                })
+                self.assertEqual(actors_response.json['code'], 401)
+
+    def test_cd_patch(self):
+        """"
+        Casting Directors can edit actors
         """
         data = ['actors']
-        for data_type in data:
-            actors_response = self.cd_post(data_type)
-            self.assertEqual(actors_response.json, {f'{data_type}': [
-                {'name': 'Clarece', 'gender': 'Female', 'id': 1, 'age': 88, 'movies': []}
-            ], 'success': True})
+        for entity_type in data:
+
+            if entity_type == 'actors':
+                actor_data = {
+                    "name": "Clarece",
+                    "gender": "f",
+                    "age": 88
+                }
+                actor = Actors(**actor_data)
+                actor.insert()
+
+                actors_response = self.user_patch('CD', entity_type, 1, {
+                    "name": "Amanda"
+                })
+
+                self.assertEqual(actors_response.json, {f'{entity_type}': [
+                    {'name': 'Amanda', 'gender': 'Female', 'id': 1, 'age': 88, 'movies': []}
+                ], 'success': True})
+
+    def test_cd_delete(self):
+        """"
+        Casting Directors can delete actors
+        """
+        data = ['actors']
+        for entity_type in data:
+            if entity_type == 'actors':
+                actor_data = {
+                    "name": "Clarece",
+                    "gender": "f",
+                    "age": 88
+                };
+                actor = Actors(**actor_data)
+                actor.insert()
+
+                actors_response = self.user_delete('CD', entity_type, 1)
+                self.assertEqual(actors_response.json, {'delete': 1, 'success': True})
+
+    def test_ep_get(self):
+        """"
+        Executive Producers can get their permitted data
+        """
+        data = ['actors', 'movies']
+
+        for entity_type in data:
+            actors_response = self.user_get('CD', entity_type)
+            self.assertEqual(actors_response.json, {f'{entity_type}': []})
+
+    def test_ep_post(self):
+        """"
+        Executive Producers can create actors and movies
+        """
+        data = ['actors', 'movies']
+        for entity_type in data:
+            if entity_type == 'actors':
+                actors_response = self.user_post('EP', entity_type, {
+                    "name": "Clarece",
+                    "gender": "f",
+                    "age": 88
+                })
+                self.assertEqual(actors_response.json, {f'{entity_type}': [
+                    {'name': 'Clarece', 'gender': 'Female', 'id': 1, 'age': 88, 'movies': []}
+                ], 'success': True})
+
+            if entity_type == 'movies':
+                movies_response = self.user_post('EP', entity_type, {
+                    "title": "The Big One",
+                    "release_date": datetime.fromisoformat('2020-03-22 22:23:11').timestamp()
+                })
+                self.assertEqual(movies_response.json, {
+                    'success': True,
+                    'movies': [{
+                        'id': 1,
+                        'title': "The Big One",
+                        'release_date': 'Sun Mar 22 22:23:11 2020',
+                        'actors': []
+                    }]
+                })
 
     def test_public_get(self):
         """"
         The public cannot get authenticated data
         """
         data = ['actors', 'movies']
-        for data_type in data:
-            actors_response = self.public_get(data_type)
+        for entity_type in data:
+            actors_response = self.public_get(entity_type)
             self.assertEqual(actors_response.json['code'], 401)
 
 

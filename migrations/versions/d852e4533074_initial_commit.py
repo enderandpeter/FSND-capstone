@@ -29,7 +29,7 @@ def upgrade():
     )
     op.create_table('movies',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('title', sa.String(), nullable=False),
+    sa.Column('title', sa.String(100), nullable=False),
     sa.Column('release_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
