@@ -97,7 +97,12 @@ class Movies(Model, db.Model):
             'id': self.id,
             'title': self.title,
             'release_date': self.release_date.strftime('%c'),
-            'actors': [actor.format() for actor in self.actors]
+            'actors': [{
+                'id': actor.id,
+                'name': actor.name,
+                'gender': 'Male' if actor.gender is 'm' else 'Female',
+                'age': actor.age
+            } for actor in self.actors]
         }
 
 
@@ -113,5 +118,9 @@ class Actors(Model, db.Model):
             'name': self.name,
             'gender': 'Male' if self.gender is 'm' else 'Female',
             'age': self.age,
-            'movies': [movie.format() for movie in self.movies]
+            'movies': [{
+                'id': movie.id,
+                'title': movie.title,
+                'release_date': movie.release_date.strftime('%c')
+            } for movie in self.movies]
         }

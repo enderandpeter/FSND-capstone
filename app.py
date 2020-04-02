@@ -16,7 +16,6 @@ def create_app(test_config=None):
     else:
         app.db = setup_db(app)
 
-
     CORS(
         app,
         origins='*',
@@ -36,7 +35,7 @@ def create_app(test_config=None):
         try:
             actors = Actors.query.order_by('id').all()
             response = {
-                'actors': [actor.short() for actor in actors]
+                'actors': [actor.format() for actor in actors]
             }
         except Exception:
             print(sys.exc_info())
@@ -50,7 +49,7 @@ def create_app(test_config=None):
         try:
             movies = Movies.query.order_by('id').all()
             response = {
-                'movies': [movie.short() for movie in movies]
+                'movies': [movie.format() for movie in movies]
             }
         except Exception:
             print(sys.exc_info())
@@ -58,16 +57,21 @@ def create_app(test_config=None):
 
         return jsonify(response)
 
-    def validate_actor(name=None, gender=None, age=None, updating=False):
+    def validate_actor(name: str = None, gender: str = None, age: int = None, movies: list = None, updating: bool = False):
         check_name = True if name is not None else False
         check_gender = True if gender is not None else False
         check_age = True if age is not None else False
 
         if not updating:
-            if not isinstance(name, str) or not isinstance(gender, str) or not isinstance(age, int):
-                raise UnprocessableEntity(
-                    description=f'Name, gender and age must be the required types when creating an actor'
-                )
+            params = {
+                'name': name,
+                'gender': gender,
+                'age': age
+            }
+            for (param_name, param_value) in params.items():
+                if param_value is None:
+                    raise UnprocessableEntity(
+                        description=f'{param_name} must be present when creating this entity')
 
         actor_data = {}
 
@@ -103,17 +107,26 @@ def create_app(test_config=None):
                     description=f'Actor age greater than {MIN_ACTOR_AGE} and less than {MAX_ACTOR_AGE}'
                 )
 
+        if movies:
+            actor_data['movies'] = Movies.query.filter(Movies.id.in_(movies)).all()
+
         return actor_data
 
-    def validate_movie(title=None, release_date=None, updating=False):
+    def validate_movie(title: str = None, release_date: float = None, actors: list = None, updating: bool = False):
         check_title = True if title is not None else False
         check_release_date = True if release_date is not None else False
 
         if not updating:
-            if not isinstance(title, str) or not isinstance(release_date, int):
-                raise UnprocessableEntity(
-                    description=f'Title and release date must be of the required types when creating a movie'
-                )
+            params = {
+                'title': title,
+                'release_date': release_date
+            }
+
+            for (param_name, param_value) in params.items():
+                if param_value is None:
+                    raise UnprocessableEntity(
+                        description=f'{param_name} must be present when creating this entity'
+                    )
 
         movie_data = {}
 
@@ -136,19 +149,39 @@ def create_app(test_config=None):
                     description=f'Could not create date and time from value {release_date}'
                 )
 
+        if actors:
+            movie_data['actors'] = Actors.query.filter(Actors.id.in_(actors)).all()
+
         return movie_data
 
     @app.route('/actors', methods=['POST'])
     @requires_auth(permission='create:actors')
     def create_actor():
+        """
+        Required: name, gender, age
+        Optional: movies
+        :return:
+        """
         try:
-            actor_data = {
-                'name': request.get_json()['name'],
-                'gender': request.get_json()['gender'],
-                'age': request.get_json()['age']
-            }
+            required_props = [
+                'name',
+                'gender',
+                'age'
+            ]
 
-            actor_data = validate_actor(**actor_data, updating=True)
+            optional_props = [
+                'movies'
+            ]
+
+            actor_data = {}
+            for prop in required_props:
+                actor_data[prop] = request.get_json()[prop]
+
+            for prop in optional_props:
+                if prop in request.get_json():
+                    actor_data[prop] = request.get_json()[prop]
+
+            actor_data = validate_actor(**actor_data)
 
             actor = Actors(**actor_data)
             actor.insert()
@@ -179,7 +212,7 @@ def create_app(test_config=None):
                 if prop in request.get_json():
                     actor_data[prop] = request.get_json()[prop]
 
-            actor_data = validate_actor(**actor_data)
+            actor_data = validate_actor(**actor_data, updating=True)
 
             for prop, val in actor_data.items():
                 setattr(actor, prop, val)
@@ -222,12 +255,24 @@ def create_app(test_config=None):
     @requires_auth(permission='create:movies')
     def create_movie():
         try:
-            movie_data = {
-                'title': request.get_json()['title'],
-                'release_date': request.get_json()['release_date']
-            }
+            required_props = [
+                'title',
+                'release_date'
+            ]
 
-            movie_data = validate_movie(**movie_data, updating=True)
+            optional_props = [
+                'actors'
+            ]
+
+            movie_data = {}
+            for prop in required_props:
+                movie_data[prop] = request.get_json()[prop]
+
+            for prop in optional_props:
+                if prop in request.get_json():
+                    movie_data[prop] = request.get_json()[prop]
+
+            movie_data = validate_movie(**movie_data)
 
             movie = Movies(**movie_data)
             movie.insert()
@@ -258,7 +303,7 @@ def create_app(test_config=None):
                 if prop in request.get_json():
                     movie_data[prop] = request.get_json()[prop]
 
-            movie_data = validate_actor(**movie_data)
+            movie_data = validate_movie(**movie_data, updating=True)
 
             for prop, val in movie_data.items():
                 setattr(movie, prop, val)
@@ -276,7 +321,7 @@ def create_app(test_config=None):
 
         return jsonify(response)
 
-    @app.route('/movies/<movie_id>', methods=['DELETE'])
+    @app.route('/movies/<int:movie_id>', methods=['DELETE'])
     @requires_auth(permission='delete:movies')
     def delete_movie(movie_id):
         try:
