@@ -201,11 +201,9 @@ def create_app(test_config=None):
     @requires_auth(permission='update:actors')
     def update_actor(actor_id):
         try:
-            actor = Actors.query.get(actor_id)
-            if not actor:
-                raise
+            actor = Actors.query.filter(Actors.id == actor_id).first_or_404()
 
-            actor_props = ['name', 'gender', 'age']
+            actor_props = ['name', 'gender', 'age', 'movies']
             actor_data = {}
 
             for prop in actor_props:
@@ -224,6 +222,8 @@ def create_app(test_config=None):
             }
         except UnprocessableEntity:
             raise
+        except NotFound:
+            raise
         except Exception:
             print(sys.exc_info())
             raise BadRequest
@@ -234,7 +234,7 @@ def create_app(test_config=None):
     @requires_auth(permission='delete:actors')
     def delete_actor(actor_id):
         try:
-            actor = Actors.query.get(actor_id)
+            actor = Actors.query.filter(Actors.id == actor_id).first_or_404()
             if not actor:
                 raise NotFound
 
@@ -243,6 +243,8 @@ def create_app(test_config=None):
                 'success': True,
                 'delete': actor_id
             }
+        except NotFound:
+            raise
         except NotFound:
             raise
         except Exception:
@@ -292,11 +294,11 @@ def create_app(test_config=None):
     @requires_auth(permission='update:movies')
     def update_movie(movie_id):
         try:
-            movie = Movies.query.get(movie_id)
+            movie = Movies.query.filter(Movies.id == movie_id).first_or_404()
             if not movie:
                 raise
 
-            movie_props = ['title', 'release_date']
+            movie_props = ['title', 'release_date', 'actors']
             movie_data = {}
 
             for prop in movie_props:
@@ -315,6 +317,8 @@ def create_app(test_config=None):
             }
         except UnprocessableEntity:
             raise
+        except NotFound:
+            raise
         except Exception:
             print(sys.exc_info())
             raise BadRequest
@@ -325,9 +329,7 @@ def create_app(test_config=None):
     @requires_auth(permission='delete:movies')
     def delete_movie(movie_id):
         try:
-            movie = Movies.query.get(movie_id)
-            if not movie:
-                raise NotFound
+            movie = Movies.query.filter(Movies.id == movie_id).first_or_404()
 
             movie.delete()
             response = {
