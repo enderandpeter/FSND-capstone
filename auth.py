@@ -2,7 +2,7 @@ import json
 import os
 from flask import request
 from functools import wraps
-from jose import jwt
+from jose import jwt, JWTError
 from urllib.request import urlopen
 
 from werkzeug.exceptions import Unauthorized
@@ -50,7 +50,10 @@ def check_permissions(permission, payload):
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{auth0_settings["AUTH0_DOMAIN"]}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
-    unverified_header = jwt.get_unverified_header(token)
+    try:
+        unverified_header = jwt.get_unverified_header(token)
+    except JWTError:
+        raise AuthHeaderInvalid(description='Could not decode auth token')
     rsa_key = {}
     if 'kid' not in unverified_header:
         raise AuthHeaderInvalid(description='Authorization malformed.')

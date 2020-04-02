@@ -53,13 +53,14 @@ class CastingTestCase(unittest.TestCase):
 
         return token_response['access_token']
 
-    def user_get(self, user_type, entity_type):
+    def user_get(self, user_type, entity_type, expired=False, token=''):
         """
         Get data as a certain type of user
         :return:
         """
 
-        token = CastingTestCase.get_access_token(user_type)
+        if not expired:
+            token = CastingTestCase.get_access_token(user_type)
 
         return self.client().get(f'/{entity_type}', headers={
             'Authorization': f'Bearer {token}'
@@ -317,6 +318,10 @@ class CastingTestCase(unittest.TestCase):
 
         movie1 = self.user_get('CA', 'movies')
         self.assertEqual(len(movie1.json['movies'][0]['actors']), 2)
+
+    def test_expired_token(self):
+        movies_response = self.user_get('CA', 'movies', True, os.environ['TEST_EXPIRED_TOKEN'])
+        self.assertEqual(movies_response.json['message'], 'token_expired')
 
     def test_public_get(self):
         """"

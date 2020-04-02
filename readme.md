@@ -42,6 +42,8 @@ See the bottom of `app.py` for the run settings. The server will run on port 808
      * `TEST_CA_USER`, `TEST_CA_PASS`
      * `TEST_CD_USER`, `TEST_CD_PASS`
      * `TEST_EP_USER`, `TEST_EP_PASS`
+   * Other required test env variables:
+     * `TEST_EXPIRED_TOKEN` - An expired JWT
 2. Run `python test_app.py`
 
 ## Users
