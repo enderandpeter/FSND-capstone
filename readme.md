@@ -20,6 +20,8 @@ Tested on:
    
 ## Deployment
 
+All environment variable values will be provided separately so that no sensitve data is committed. 
+
 ### Dev
 
 1. Set the environment variable:
@@ -70,3 +72,11 @@ curl --request POST \
   --data 'client_id=${AUTH0_CLIENT_ID}' \
   --data client_secret=${AUTH0_CLIENT_SECRET}
 ```
+
+# API Documentation
+
+Please see the [Casting API documentation](https://documenter.getpostman.com/view/3237152/SzYaTwwX) for important details on the REST API.
+The intro describes how the doc is structured. Example request and responses are on the right-hand side. In the upper right-hand
+corner, click the *No Environment* dropdown to see available environments. For some reason "Local" is repeated several times, but
+just the first option gives you a URL like the one in my local environment. The *Production* environment gives you the
+Heroku URL.
