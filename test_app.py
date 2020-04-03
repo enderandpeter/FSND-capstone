@@ -323,6 +323,26 @@ class CastingTestCase(unittest.TestCase):
         movies_response = self.user_get('CA', 'movies', True, os.environ['TEST_EXPIRED_TOKEN'])
         self.assertEqual(movies_response.json['message'], 'token_expired')
 
+    def test_not_found(self):
+        movies_response = self.user_delete('EP', 'movies', 100)
+        self.assertEqual(movies_response.json['code'], 404)
+
+    def test_method_not_allowed(self):
+        token = CastingTestCase.get_access_token('CA')
+
+        actors_response = self.client().put('actors', headers={
+            'Authorization': f'Bearer {token}'
+        })
+        self.assertEqual(actors_response.json['code'], 405)
+
+    def test_bad_request(self):
+        token = CastingTestCase.get_access_token('CA')
+
+        actors_response = self.client().get('actors', headers={
+            'Authorization': 'Bearer'
+        })
+        self.assertEqual(actors_response.json['code'], 400)
+
     def test_public_get(self):
         """"
         The public cannot get authenticated data

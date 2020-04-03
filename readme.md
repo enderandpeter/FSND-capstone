@@ -24,6 +24,7 @@ Tested on:
 
 1. Set the environment variable:
    * `FLASK_ENV=development`
+   * `FLASK_DEBUG=1`
 2. Run `python app.py`
 
 ### Prod
@@ -32,7 +33,7 @@ Tested on:
 
 See the bottom of `app.py` for the run settings. The server will run on port 8080 and any IP from which it can be reached.
 
-## Testing
+### Testing
 
 1. Set the environment variable:
    * `DATABASE_TEST_URL` - The test database URL
@@ -46,19 +47,26 @@ See the bottom of `app.py` for the run settings. The server will run on port 808
      * `TEST_EXPIRED_TOKEN` - An expired JWT
 2. Run `python test_app.py`
 
-## Users
+## Authentication and Authorization
 
-User authentication, and authorization are managed by Auth0.
+User authentication and authorization are managed by Auth0. Login credentials will be provided for review. You can obtain
+JWTs in the following ways:
 
-Currently, if you registered a new account, you'd still not access anything without a role with permissions.
-These are manually attributed for the time being, so the Postman collection will contain JWTs that can be used
-in the frontend. Also, there are test credentials available for each role, which are used in the tests to obtain
-access tokens from the Machine-to-Machine test application.
+* For project submission, a Postman collection will be included with collections variables *ep_token*, *cd_token*, and *ca_token*
+that are set to the JWT for an Executive Producer, Casting Director, and Casting Assistant.
+* Make a request to `https://${AUTH0_DOMAIN}/authorize?audience=${API_AUDIENCE}&response_type=code&client_id=${AUTH0_CLIENT_ID}`, login with
+the credentials you will be provided and you will be redirected to a dead URL from which you can obtain the JWT from the `access_token` parameter.
+* Make a [Resource Owner Pasword Grant request](https://auth0.com/docs/api-auth/tutorials/password-grant#ask-for-a-token) which will
+return a JWT in the `access_token` property of the response data:
 
-### Permissions
-
-These permissions are in the `permissions` property of the JWT payload, as you might expect. 
-
-#### Casting Assistants
-
-* *get:actors* 
+```
+curl --request POST \
+  --url 'https://${AUTH0_DOMAIN}/oauth/token' \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data grant_type=password \
+  --data username=${TEST_CA_USER} \
+  --data 'password=${TEST_CA_PASS}' \
+  --data audience=${API_AUDIENCE} \
+  --data 'client_id=${AUTH0_CLIENT_ID}' \
+  --data client_secret=${AUTH0_CLIENT_SECRET}
+```
