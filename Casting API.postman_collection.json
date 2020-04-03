@@ -660,7 +660,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"The All My Children\",\n\t\"release_date\": 1584900000,\n\t\"actors\": [1,2,3]\n}",
+							"raw": "{\n\t\"title\": \"The Big One\",\n\t\"release_date\": 1584900000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -868,7 +868,7 @@
 									"",
 									"pm.test(\"actor has new name\", function () {",
 									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.actors[0].name).to.equal('Amanda')",
+									"    pm.expect(jsonData.movies[0].title).to.equal('The Big One')",
 									"});",
 									""
 								],
@@ -893,7 +893,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Amanda\"\n}",
+							"raw": "{\n\t\"title\": \"The Big One\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -953,12 +953,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/actors/:id",
+							"raw": "{{host}}/movies/:id",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
-								"actors",
+								"movies",
 								":id"
 							],
 							"variable": [
@@ -1202,14 +1202,6 @@
 							"script": {
 								"id": "6ff3d0d5-74b5-430d-93d4-6b5fa40e7024",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"actor has new name\", function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData.actors[0].name).to.equal('Amanda')",
-									"});",
 									""
 								],
 								"type": "text/javascript"
@@ -1227,7 +1219,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Amanda\"\n}",
+							"raw": "{\n\t\"title\": \"The Big One\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1537,7 +1529,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4MjlkZjZlNTAyM2QwYmRiNzY4MjAzIiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTgzOTAyMSwiZXhwIjoxNTg1ODQ3NDIxLCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInVwZGF0ZTphY3RvcnMiLCJ1cGRhdGU6bW92aWVzIl19.C0cGtst284-nz0NSsRCkDwFvy_LAnSE1539NpQbmpaWf1g0ocgQYNCMBLidxHkXANdYaVzcjm5Bjs46SKLRyRDhKBQm8qYhUmbjj4k4EuihTXk0h-kjIZqEuZlXL-efYNLW52H1qvt76fG09GiUN0KLlYGfLb0Lxb7drNRD0C31b1W6uk4Phxqf6luEMjjhndi4vt0KxT6t7eu00OHT23iX98uro0Ye2cK3J68rEC_HkdvvwZ7p0XigzBMYuJaHXlGLSGo3_sbQy7nXjTsIr_yR9O-0UqJUZj1pZUlDu5lnsUeBEQNALWvnKqu_GqVEa8mkaxepq-m0ZtmUWZtVD8Q",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4MjlkZjZlNTAyM2QwYmRiNzY4MjAzIiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTg5MTY0NywiZXhwIjoxNTg1OTAwMDQ3LCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInVwZGF0ZTphY3RvcnMiLCJ1cGRhdGU6bW92aWVzIl19.AcS_ZnYcwbmjU97MBvKLIMF9ffuzhRa7N9EItJPcUkxUNdyPVUyLKXdHb8CsMb1US2RZrMsYPjnGekp2nzJv61FUi_k4SBrv9uNXifiPNBl5-ADFAh5Fk-TC3DKPkGQG2Od_w0HwNzvnxc_azo_ZXeKpqXEKbMRdgjkCbhK0qjrN6dzqcfoEmfc3buxtHcQjHfvrL7Z_TaRs8CSU_FX8kKT1kRdx9fCOZNQr4TtXQ6ABhC8YMwm9kgnqLRih_8FxMcSUV94rIsL-QPdoEWqSIeA9pElsMsY2CUAu_Jgz2YhWJ-YPZfm_QPD7ouUwReUkS0g2t1EEYZJE_hLx2whHXw",
 									"type": "string"
 								}
 							]
@@ -1779,8 +1771,8 @@
 							"script": {
 								"id": "360b37d2-c246-413d-8113-71dd56f2b33b",
 								"exec": [
-									"pm.test(\"Status code is 401\", function () {",
-									"    pm.response.to.have.status(401);",
+									"pm.test(\"Status code is 405\", function () {",
+									"    pm.response.to.have.status(405);",
 									"});",
 									""
 								],
@@ -1912,8 +1904,8 @@
 							"script": {
 								"id": "360b37d2-c246-413d-8113-71dd56f2b33b",
 								"exec": [
-									"pm.test(\"Status code is 400\", function () {",
-									"    pm.response.to.have.status(400);",
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
 									"});",
 									""
 								],
@@ -1963,12 +1955,6 @@
 										"key": "Content-Type",
 										"type": "text",
 										"value": "application/json"
-									},
-									{
-										"description": "The JWT token for the role",
-										"key": "Authorization",
-										"type": "text",
-										"value": "Bearer {{token}}"
 									}
 								],
 								"body": {
@@ -1990,8 +1976,8 @@
 									]
 								}
 							},
-							"status": "BAD REQUEST",
-							"code": 400,
+							"status": "UNAUTHORIZED",
+							"code": 401,
 							"_postman_previewlanguage": "json",
 							"header": [
 								{
@@ -2000,7 +1986,7 @@
 								},
 								{
 									"key": "Content-Length",
-									"value": "99"
+									"value": "119"
 								},
 								{
 									"key": "Access-Control-Allow-Origin",
@@ -2020,11 +2006,11 @@
 								},
 								{
 									"key": "Date",
-									"value": "Thu, 02 Apr 2020 15:11:02 GMT"
+									"value": "Fri, 03 Apr 2020 05:42:45 GMT"
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"code\": 400,\n    \"description\": \"Could not decode auth token\",\n    \"message\": \"invalid_header\"\n}"
+							"body": "{\n    \"code\": 401,\n    \"description\": \"Authorization header is expected.\",\n    \"message\": \"authorization_header_missing\"\n}"
 						}
 					]
 				}
@@ -2057,45 +2043,45 @@
 	],
 	"variable": [
 		{
-			"id": "fbda583e-6a3a-4fb1-81cc-de57304b32c5",
+			"id": "0b9fb5c1-06ff-49f2-816b-1be1e5bc6174",
 			"key": "ep_actor_id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "c32f0ff6-9ae3-4213-9954-df3c693c397f",
+			"id": "359767c7-c70f-4b64-9cbe-b1e23d286352",
 			"key": "ep_movie_id",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "60254a5c-eeb4-4646-b86c-3caf8d8e9ae0",
+			"id": "e1ddd948-32d0-4352-b48b-c74c0da96281",
 			"key": "cd_actor_id",
 			"value": "2",
 			"type": "string"
 		},
 		{
-			"id": "93cb92a9-0af0-45c2-84ac-6fd225f671ad",
+			"id": "d247b4a1-df82-4590-a84a-ff856f0b3b93",
 			"key": "expired_token",
 			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4MDJmZWJlYzUxYmUwYzg5MDRiOWQ0IiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTYxMTIxMSwiZXhwIjoxNTg1NjExMjcxLCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiXX0.y1xh37MMhT2GLQaOYTz2s0jlnPpRszofyq-2YPFGMmvX_Ir636ofuKwxG8BRSuXPvBSLLgT8fHyI2zODnhj2O2TJiucWsDiWmOgyBS5W8KEQYUjG3bbZTXS3OZ7ahPKafaTMtsQUFY_dneAPv_2NYr5jB13gAnuhBum7J4wPJotC_VusDexaMuLZ_UkfzQxm5T2Y14YDpSEhFuQU2RbeWfuoXq7uEPwdHL3N_uUnNysdgjGmC9y0TPVSnmEzwBWZV2VTjCh7_rUrshfFcOEVg6mk_JgtsYLd9noTU01lIgchdoJX1ATzu4WinLWY_dWPHr1qNy_grMYn_p3BeiZsQw",
 			"type": "string"
 		},
 		{
-			"id": "ba6bb1ba-7a80-46f9-9e1f-5defd2c1be95",
+			"id": "9f6e547e-dddc-4017-b243-278575990dfa",
 			"key": "cd_token",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4MjlkZjZlNTAyM2QwYmRiNzY4MjAzIiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTgzOTAyMSwiZXhwIjoxNTg1ODQ3NDIxLCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInVwZGF0ZTphY3RvcnMiLCJ1cGRhdGU6bW92aWVzIl19.C0cGtst284-nz0NSsRCkDwFvy_LAnSE1539NpQbmpaWf1g0ocgQYNCMBLidxHkXANdYaVzcjm5Bjs46SKLRyRDhKBQm8qYhUmbjj4k4EuihTXk0h-kjIZqEuZlXL-efYNLW52H1qvt76fG09GiUN0KLlYGfLb0Lxb7drNRD0C31b1W6uk4Phxqf6luEMjjhndi4vt0KxT6t7eu00OHT23iX98uro0Ye2cK3J68rEC_HkdvvwZ7p0XigzBMYuJaHXlGLSGo3_sbQy7nXjTsIr_yR9O-0UqJUZj1pZUlDu5lnsUeBEQNALWvnKqu_GqVEa8mkaxepq-m0ZtmUWZtVD8Q",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4MjlkZjZlNTAyM2QwYmRiNzY4MjAzIiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTg5MTY0NywiZXhwIjoxNTg1OTAwMDQ3LCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInVwZGF0ZTphY3RvcnMiLCJ1cGRhdGU6bW92aWVzIl19.AcS_ZnYcwbmjU97MBvKLIMF9ffuzhRa7N9EItJPcUkxUNdyPVUyLKXdHb8CsMb1US2RZrMsYPjnGekp2nzJv61FUi_k4SBrv9uNXifiPNBl5-ADFAh5Fk-TC3DKPkGQG2Od_w0HwNzvnxc_azo_ZXeKpqXEKbMRdgjkCbhK0qjrN6dzqcfoEmfc3buxtHcQjHfvrL7Z_TaRs8CSU_FX8kKT1kRdx9fCOZNQr4TtXQ6ABhC8YMwm9kgnqLRih_8FxMcSUV94rIsL-QPdoEWqSIeA9pElsMsY2CUAu_Jgz2YhWJ-YPZfm_QPD7ouUwReUkS0g2t1EEYZJE_hLx2whHXw",
 			"type": "string"
 		},
 		{
-			"id": "ba71e54b-a490-42b6-91fc-e38808cebdc8",
+			"id": "aaad6bba-20d7-4d7f-9076-572b32dfb1d9",
 			"key": "ca_token",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4MDJmZWJlYzUxYmUwYzg5MDRiOWQ0IiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTgzOTAwMCwiZXhwIjoxNTg1ODQ3NDAwLCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiXX0.pnV7TOdnjsz6STNa4Cj4KrPrO_mi1yNxQ_QnWDe7SNb7yb0SkgXz0yfl-D9Xv4BjLTBTNTsJPxuMzwQfVAysVwAWQsrbwQGHACEA_QQEcJz8LhK1wrcQApqNsFCBI8WdCn3lrsHe2fQKsn-hD-qo6wbX7hX0mgjSPXz8VQqX5jhdVH4ZJAPw-N8ku4e2Q08jTTR3HJwi9lq-1KMD2Ayc57gHozIXnJrKOgmFQxzHLPS2xhfTT09iJ6F9qyrkyTJ_w_ec807p_ozFLy0d2o59RzYD5M4XcMBv1ZSaT7k4YzYQLJB9c-0beae6u8OJmphiQa3yYM9FS4Mu-gx2GEd5Ww",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4MDJmZWJlYzUxYmUwYzg5MDRiOWQ0IiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTg5MTY4NywiZXhwIjoxNTg1OTAwMDg3LCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiXX0.c9QG8e0M-jDoNb16LR2Ctv2V0LWg_py2JBgi43nN6nomfERjvZPflf_izFbp-LLHUctiFbY0ot0tXyDopLNPfLcT-3OtqityzAZwvqv7S6eRLVOEZODGjiPLljh3z48oGF1RempoweWPFZiHEqz_Uox1pz907ThwkslZcgw4P7ehUAs2pa3b_3qT2vyNb1JDGz4hbQYIWS5GUIYjxyaqBH_L38v5v070gR5cjY0haGwUTOcNOaAdMzFgfd05o6hEDF-Vt7TIBfQlizfwUY0edPmj9DeIqKS8yN0dNR9gsXCX25pokFd9JGHYPQ6WX84gtssjXK9uMrTHoBLJ8Y5p-A",
 			"type": "string"
 		},
 		{
-			"id": "84e73760-fd4d-46d6-aefc-253621875c12",
+			"id": "13c177ed-63b4-41f9-8dc2-48a18f0feb00",
 			"key": "ep_token",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4NDA3NTlhYjg4ZDQwYmU4OWZhOGI2IiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTc5MTk5MSwiZXhwIjoxNTg1ODAwMzkxLCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImNyZWF0ZTptb3ZpZXMiLCJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwidXBkYXRlOmFjdG9ycyIsInVwZGF0ZTptb3ZpZXMiXX0.WfozTNc5ojFzLnYkjtPE1oxuZwEAyt0e5JIJT-t8_-tW0FU8ORSFpOPwEn7nPZyqIgOZTbI4ttciljOZfKK9UJJrddKOgqGwJtiHtzOF7ynlCwallrdJk7X4oyhNHLuFmdJ71odYxLyw1DAHslBd6hpTe3rYBDtPA3quwfDSy5LcrmohLs-P3k0khMpHwxDq0ZaUpSY8o8h-Uo2VyzQDy0L20SH7nbgkv7TbTSx6Q22MyFiLmFDmzV2OQF-yYxnotizvwFNKNFDiFd3aLdjDwmxrTfCcKdhOtbJReSCFPHCTgJIjAWAgoet65CyE5tIUD9IMPQLSu1YWAyr_p0wQ9w",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1Ea3pOMEV4UmtRMVFqQXpPVEkxUkRKR01ERXpRVVk0TkRrMk9VRkVSVGhETVRnM016VTJOQSJ9.eyJpc3MiOiJodHRwczovL3N3aXYtZnNuZC5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NWU4NDA3NTlhYjg4ZDQwYmU4OWZhOGI2IiwiYXVkIjoiY2FzdGluZyIsImlhdCI6MTU4NTg5MTcwOCwiZXhwIjoxNTg1OTAwMTA4LCJhenAiOiJxSmJxcWxRR05pY245dlRXcjNJTFk5RVMxbzlXS05FRCIsImd0eSI6InBhc3N3b3JkIiwicGVybWlzc2lvbnMiOlsiY3JlYXRlOmFjdG9ycyIsImNyZWF0ZTptb3ZpZXMiLCJkZWxldGU6YWN0b3JzIiwiZGVsZXRlOm1vdmllcyIsImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIiwidXBkYXRlOmFjdG9ycyIsInVwZGF0ZTptb3ZpZXMiXX0.edUJtLQ-lEUKX8Gw2v6UPM3WoZNblBHeMY0h7FaihlTzcHxDs5I90Tf6h89rA4MCKrldYp5asib_xHBgYFXQDV8pOIY7973_eeoVRmIHbZ_PgLErYR7GEAnRILsJwE76IwZjtkRnWK_mfmno_XLBbwcx0Nt9WT-jiLyrUaUh8c9GmnOUkDWxRxAjPdyxaHLinT41dVYZtxItU9IWjkiP9x29eHYFjjXEZ7uXqlHpDK7WFM1BXFDb6o6icNQWfU0_hVKFjtp27emce6phsor82uH57GMKLQAgFN6WAomxi994FsrXP4Q1UClQwAY-IcAab9JmCs-6wx8SNU6hLgjWvA",
 			"type": "string"
 		}
 	],
